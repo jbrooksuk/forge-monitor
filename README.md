@@ -1,6 +1,6 @@
 # Forge Monitor
 
-Forge Monitor is built with [Laravel Zero](https://laravel-zero.com/).
+Laravel Forge monitoring built with Laravel.
 
 ## Running
 
