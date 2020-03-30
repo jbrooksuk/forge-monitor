@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('stat:disk')->hourly();
         $schedule->command('stat:cpu')->everyMinute();
         $schedule->command('stat:mem')->everyMinute();
+        $schedule->command('app:clean-up')->monthly();
     }
 
     /**
