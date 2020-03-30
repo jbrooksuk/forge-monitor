@@ -7,7 +7,7 @@ Laravel Forge monitoring built with Laravel.
 You can run Forge Monitor with:
 
 ```bash
-php monitor stat:mem
+php artisan stat:mem
 ```
 
 The available stat commands are:
@@ -39,7 +39,9 @@ At the end of collecting each sample, we will clear out data older than a pre-de
 
 ## Config File Description
 
-Forge Monitor uses a TOML based file for configuring monitors, example:
+Forge Monitor uses a TOML based file for configuring monitors named `.monitor`. The monitor file needs to live either in the user's home directory or the root of the application.
+
+Example configuration:
 
 ```toml
 [monitor-1]
