@@ -14,30 +14,20 @@ class CpuLoad extends AbstractStat implements Stat
      */
     public function sample()
     {
-        // https://www.php.net/manual/en/function.sys-getloadavg.php#118673
-        if (is_readable("/proc/stat")) {
-            // Collect 2 samples - each with 1 second period
-            $statData1 = $this->getServerLoadData();
-            sleep(1);
-            $statData2 = $this->getServerLoadData();
+        if (is_readable("/proc/cpuinfo")) {
+            $cpuNb = (int) $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
+            $load = (float) $this->executeCommand('cat /proc/loadavg | awk '\{print $1}\'');
+            $loadPercent = (100 * $load) / $cpuNb;
 
-            if (!is_null($statData1) && !is_null($statData2)) {
-                $statData2[0] -= $statData1[0];
-                $statData2[1] -= $statData1[1];
-                $statData2[2] -= $statData1[2];
-                $statData2[3] -= $statData1[3];
+            dd($loadPercent);
 
-                // Sum up the 4 values for User, Nice, System and Idle and calculate
-                // the percentage of idle time (which is part of the 4 values!)
-                $cpuTime = $statData2[0] + $statData2[1] + $statData2[2] + $statData2[3];
-
-                // Invert percentage to get CPU time, not idle time
-                $load = 100 - ($statData2[3] * 100 / $cpuTime);
-
-                CpuUsage::create([
-                    'load' => $load,
-                ]);
+            if ($loadPercent >= 100.0) {
+                $loadPercent = 100;
             }
+
+            CpuUsage::create([
+                'load' => $loadPercent,
+            ]);
         }
     }
 
@@ -65,40 +55,5 @@ LEFT JOIN (SELECT * FROM alerts WHERE monitor_id = ? AND monitor_type = ? ORDER 
         ]);
 
         return $this->testResults($results);
-    }
-
-    /**
-     * Read the /proc/stat value.
-     *
-     * @return array|null
-     */
-    protected function getServerLoadData()
-    {
-        if (is_readable("/proc/stat")) {
-            $stats = @file_get_contents("/proc/stat");
-
-            if ($stats !== false) {
-                $stats = preg_replace("/[[:blank:]]+/", " ", $stats);
-
-                $stats = str_replace(array("\r\n", "\n\r", "\r"), "\n", $stats);
-                $stats = explode("\n", $stats);
-
-                foreach ($stats as $statLine) {
-                    $statLineData = explode(" ", trim($statLine));
-
-                    // Found!
-                    if ((count($statLineData) >= 5) && ($statLineData[0] == "cpu")) {
-                        return [
-                            $statLineData[1],
-                            $statLineData[2],
-                            $statLineData[3],
-                            $statLineData[4],
-                        ];
-                    }
-                }
-            }
-        }
-
-        return null;
     }
 }
