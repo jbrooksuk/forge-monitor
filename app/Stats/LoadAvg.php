@@ -30,7 +30,7 @@ class LoadAvg extends AbstractStat implements Stat
     {
         if (is_readable("/proc/cpuinfo")) {
             $cpuNb = $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
-            $load = $this->executeCommand('cat /proc/loadavg | awk '{print $1, $2, $3}'');
+            $load = $this->executeCommand("cat /proc/loadavg | awk '{print $1, $2, $3}'");
 
             $loads = explode(' ', $load);
 
