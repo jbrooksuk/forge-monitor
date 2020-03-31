@@ -19,8 +19,6 @@ class CpuLoad extends AbstractStat implements Stat
             $load = (float) $this->executeCommand('cat /proc/loadavg | awk "{print $1}"');
             $loadPercent = (100 * $load) / $cpuNb;
 
-            dd($loadPercent);
-
             if ($loadPercent >= 100.0) {
                 $loadPercent = 100;
             }
