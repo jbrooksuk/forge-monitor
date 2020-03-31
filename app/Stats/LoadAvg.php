@@ -3,6 +3,7 @@
 namespace App\Stats;
 
 use App\LoadAvg as LoadAvgModel;
+use App\Monitors\Monitor;
 use Illuminate\Support\Facades\DB;
 
 class LoadAvg extends AbstractStat implements Stat
