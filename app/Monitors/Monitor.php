@@ -5,6 +5,7 @@ namespace App\Monitors;
 use App\Stats\CpuLoad;
 use App\Stats\DiskSpace;
 use App\Stats\FreeMemory;
+use App\Stats\LoadAvg;
 use App\Stats\UsedMemory;
 
 class Monitor
@@ -74,7 +75,9 @@ class Monitor
     {
         switch ($this->type) {
             case 'disk': return new DiskSpace($this);
-            case 'cpu_load': return new CpuLoad($this);
+            case 'load_avg_1': return new LoadAvg($this, 1);
+            case 'load_avg_5': return new LoadAvg($this, 2);
+            case 'load_avg_15': return new LoadAvg($this, 3);
             case 'free_memory': return new FreeMemory($this);
             case 'used_memory': return new UsedMemory($this);
         }

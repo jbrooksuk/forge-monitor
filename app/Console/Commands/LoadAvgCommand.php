@@ -6,7 +6,7 @@ use App\Monitors\MonitorConfig;
 use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
 
-class CpuStatCommand extends Command
+class LoadAvgCommand extends Command
 {
     use InteractsWithCli;
 
@@ -15,21 +15,21 @@ class CpuStatCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'stat:cpu';
+    protected $signature = 'stat:load';
 
     /**
      * The description of the command.
      *
      * @var string
      */
-    protected $description = 'Sample the CPU.';
+    protected $description = 'Sample the load averages.';
 
     /**
-     * The monitors for the cpu load.
+     * The monitors for the load averages.
      *
      * @var \Illuminate\Support\Collection
      */
-    protected $cpuMonitors;
+    protected $loadMonitors;
 
     /**
      * Whether the sample has been taken.
@@ -47,7 +47,7 @@ class CpuStatCommand extends Command
     {
         parent::__construct();
 
-        $this->cpuMonitors = $monitorConfig->forType('cpu_load');
+        $this->loadMonitors = $monitorConfig->forType('cpu_load');
     }
 
     /**
@@ -58,13 +58,13 @@ class CpuStatCommand extends Command
     public function handle()
     {
         // Don't run when no monitors are configured.
-        if ($this->cpuMonitors->isEmpty()) {
-            $this->verboseInfo("No CPU monitors configured...");
+        if ($this->loadMonitors->isEmpty()) {
+            $this->verboseInfo("No Load Avg monitors configured...");
 
             return;
         }
 
-        $this->cpuMonitors->each(function ($monitor) {
+        $this->loadMonitors->each(function ($monitor) {
             // Take the sample if we haven't done so already.
             if (!$this->sampleTaken) {
                 $this->sampleTaken = true;

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CpuUsage extends Model
+class LoadAvg extends Model
 {
     /**
      * The attributes that should be mutated to dates.

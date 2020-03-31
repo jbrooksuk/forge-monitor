@@ -12,15 +12,17 @@ php artisan stat:mem
 
 The available stat commands are:
 
-- `stat:cpu`
 - `stat:disk`
+- `stat:load`
 - `stat:mem`
 
 ## Stats
 
 Forge Monitor provides alerting for several monitor types:
 
-- `cpu_load` - CPU Usage (%)
+- `load_avg_1` - Load Average (1 minute)
+- `load_avg_5` - Load Average (5 minutes)
+- `load_avg_15` - Load Average (15 minutes)
 - `disk` - Free Disk Space (%)
 - `free_memory` - Free Memory (%)
 - `used_memory` - Used Memory (%)
