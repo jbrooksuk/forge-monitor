@@ -41,7 +41,7 @@ class MonitorConfig
      */
     public function forType($types)
     {
-        $types = Arr::wrap($type);
+        $types = Arr::wrap($types);
 
         if ($this->config) {
             return $this->config->whereIn('type', $types);
