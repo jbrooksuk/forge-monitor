@@ -47,7 +47,7 @@ class LoadAvgCommand extends Command
     {
         parent::__construct();
 
-        $this->loadMonitors = $monitorConfig->forType('cpu_load');
+        $this->loadMonitors = $monitorConfig->forType(['load_avg_1', 'load_avg_5', 'load_avg_15']);
     }
 
     /**

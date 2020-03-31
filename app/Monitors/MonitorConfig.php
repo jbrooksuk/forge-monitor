@@ -36,13 +36,15 @@ class MonitorConfig
     /**
      * Return the configurations for a given stat type.
      *
-     * @param  string $type
+     * @param  array|string $types
      * @return mixed
      */
-    public function forType($type)
+    public function forType($types)
     {
+        $types = Arr::wrap($type);
+
         if ($this->config) {
-            return $this->config->where('type', '=', $type);
+            return $this->config->whereIn('type', $types);
         }
     }
 
