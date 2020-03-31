@@ -2,7 +2,7 @@
 
 namespace App\Stats;
 
-use App\LoadAvg;
+use App\LoadAvg as LoadAvgModel;
 use Illuminate\Support\Facades\DB;
 
 class LoadAvg extends AbstractStat implements Stat
@@ -34,7 +34,7 @@ class LoadAvg extends AbstractStat implements Stat
 
             $loads = explode(' ', $load);
 
-            LoadAvg::create([
+            LoadAvgModel::create([
                 'period_1' => $loads[0],
                 'period_2' => $loads[1],
                 'period_3' => $loads[2],
