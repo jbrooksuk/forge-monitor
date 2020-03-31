@@ -15,12 +15,12 @@ class CpuLoad extends AbstractStat implements Stat
     public function sample()
     {
         if (is_readable("/proc/cpuinfo")) {
-            $cpuNb = (int) $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
+            $cpuNb = (float) $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
             $load = (float) $this->executeCommand('cat /proc/loadavg | awk "{print $1}"');
             $loadPercent = (100 * $load) / $cpuNb;
 
             if ($loadPercent >= 100.0) {
-                $loadPercent = 100;
+                $loadPercent = 100.0;
             }
 
             CpuUsage::create([
