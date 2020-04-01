@@ -19,7 +19,7 @@ class Memory implements Stat
             'total' => $memory['total'],
             'available' => $memory['free'],
             'used' => $memory['used'],
-            'free' => $memory['free,
+            'free' => $memory['free'],
         ]);
     }
 
