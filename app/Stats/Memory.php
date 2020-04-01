@@ -15,15 +15,11 @@ class Memory implements Stat
     {
         $memory = $this->getMemoryInfo();
 
-        $total = (float) $memory[0][0];
-        $used = round($memory[0][6] / $total, 2) * 100;
-        $free = 100 - $used;
-
         MemoryUsage::create([
-            'total' => $total,
-            'available' => $memory[0][2],
-            'used' => $used,
-            'free' => $free,
+            'total' => $memory['total'],
+            'available' => $memory['free'],
+            'used' => $memory['used'],
+            'free' => $memory['free,
         ]);
     }
 
@@ -45,19 +41,21 @@ class Memory implements Stat
     protected function getMemoryInfo()
     {
         return once(function () {
-            if (is_readable('/proc/meminfo')) {
-                $fh = fopen('/proc/meminfo', 'r');
-                $lines = '';
+            $memory = [];
 
-                while ($line = fgets($fh)) {
-                    $lines .= $line;
-                }
-                fclose($fh);
+            if (is_readable('/proc/meminfo')) {
+                $total = (int) $this->executeCommand("grep MemTotal /proc/meminfo | awk '{print $2}'");
+                $free = (int) $this->executeCommand("grep MemFree /proc/meminfo | awk '{print $2}'");
+                $used = $total - $free;
+
+                $memory[
+                    'total' => $total,
+                    'used' => ($used / $total) * 100,
+                    'free' => 100 - (($used / $total) * 100),
+                ];
             }
 
-            preg_match_all('/(\d+)/', $lines, $pieces);
-
-            return $pieces;
+            return $memory;
         });
     }
 }
