@@ -104,7 +104,7 @@ abstract class AbstractStat
                 }
             }
         } elseif ($this->lastState == self::OK) {
-            if ($this->okStreak == 1 && $this->prevAlertStreak == $this->monitor->minutes) {
+            if ($this->prevAlertStreak == $this->monitor->minutes) {
                 Alert::createForMonitor($this->monitor, self::OK);
             }
         } else {
