@@ -5,7 +5,7 @@ namespace App\Stats;
 use App\Monitors\Monitor;
 use Illuminate\Support\Facades\DB;
 
-class UsedMemory extends AbstractStat implements Stat
+class UsedMemory extends Memory implements Stat
 {
     /**
      * Sample the stat.
