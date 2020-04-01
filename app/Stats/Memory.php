@@ -48,7 +48,7 @@ class Memory implements Stat
                 $free = (int) $this->executeCommand("grep MemFree /proc/meminfo | awk '{print $2}'");
                 $used = $total - $free;
 
-                $memory[
+                $memory = [
                     'total' => $total,
                     'used' => ($used / $total) * 100,
                     'free' => 100 - (($used / $total) * 100),
