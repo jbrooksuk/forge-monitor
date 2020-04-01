@@ -4,7 +4,7 @@ namespace App\Stats;
 
 use App\MemoryUsage;
 
-class Memory implements Stat
+class Memory extends AbstractStat implements Stat
 {
     /**
      * Sample the stat.
