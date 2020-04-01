@@ -4,10 +4,11 @@ namespace App\Stats;
 
 use App\Alert;
 use App\Monitors\Monitor;
-use TitasGailius\Terminal\Terminal;
 
 abstract class AbstractStat
 {
+    use ExecuteCommands;
+
     const OK = "OK";
     const ALERT = "ALERT";
     const UNKNOWN = "UNKNOWN";
@@ -119,24 +120,5 @@ abstract class AbstractStat
     protected function getOperator()
     {
         return $this->monitor->operator == "gte" ? ">=" : "<=";
-    }
-
-    /**
-     * Execute a command.
-     *
-     * @param  string $command
-     * @return string
-     */
-    protected function executeCommand($command)
-    {
-        $output = '';
-
-        $response = Terminal::run($command);
-
-        foreach ($response->lines() as $line) {
-            $output .= $line;
-        }
-
-        return $output;
     }
 }

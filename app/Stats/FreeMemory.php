@@ -4,7 +4,7 @@ namespace App\Stats;
 
 use Illuminate\Support\Facades\DB;
 
-class FreeMemory extends Memory implements Stat
+class FreeMemory extends AbstractStat implements Stat
 {
     /**
      * Sample the stat.
