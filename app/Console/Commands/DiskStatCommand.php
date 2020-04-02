@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Config\Context;
 use App\Monitors\MonitorConfig;
 use App\Stats\DiskSpace;
-use Illuminate\Console\Command;
 use Illuminate\Console\Scheduling\Schedule;
 
-class DiskStatCommand extends Command
+class DiskStatCommand extends AbstractStatCommand
 {
     use InteractsWithCli;
 
@@ -16,7 +16,7 @@ class DiskStatCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'stat:disk';
+    protected $signature = 'stat:disk {--E|endpoint= : The endpoint to ping.}';
 
     /**
      * The description of the command.
@@ -26,13 +26,6 @@ class DiskStatCommand extends Command
     protected $description = 'Sample the disk space.';
 
     /**
-     * The monitors for the disk type.
-     *
-     * @var \Illuminate\Support\Collection
-     */
-    protected $diskMonitors;
-
-    /**
      * Whether the sample has been taken.
      *
      * @var bool
@@ -40,16 +33,11 @@ class DiskStatCommand extends Command
     protected $sampleTaken;
 
     /**
-     * Create a new Disk Stat Command instance.
+     * The stat type to look for when running the command.
      *
-     * @return void
+     * @var string
      */
-    public function __construct(MonitorConfig $monitorConfig)
-    {
-        parent::__construct();
-
-        $this->diskMonitors = $monitorConfig->forType('disk');
-    }
+    protected $statType = 'disk';
 
     /**
      * Execute the console command.
@@ -58,14 +46,16 @@ class DiskStatCommand extends Command
      */
     public function handle()
     {
+        $this->handleContext();
+
         // Don't run when no monitors are configured.
-        if ($this->diskMonitors->isEmpty()) {
+        if ($this->monitors->isEmpty()) {
             $this->verboseInfo("No disk monitors configured...");
 
             return;
         }
 
-        $this->diskMonitors->each(function ($monitor) {
+        $this->monitors->each(function ($monitor) {
             // Take the sample if we haven't done so already.
             if (!$this->sampleTaken) {
                 $this->sampleTaken = true;

@@ -2,11 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Monitors\MonitorConfig;
-use Illuminate\Console\Command;
-use Illuminate\Console\Scheduling\Schedule;
-
-class LoadAvgCommand extends Command
+class LoadAvgCommand extends AbstractStatCommand
 {
     use InteractsWithCli;
 
@@ -15,7 +11,7 @@ class LoadAvgCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'stat:load';
+    protected $signature = 'stat:load {--E|endpoint= : The endpoint to ping.}';
 
     /**
      * The description of the command.
@@ -25,13 +21,6 @@ class LoadAvgCommand extends Command
     protected $description = 'Sample the load averages.';
 
     /**
-     * The monitors for the load averages.
-     *
-     * @var \Illuminate\Support\Collection
-     */
-    protected $loadMonitors;
-
-    /**
      * Whether the sample has been taken.
      *
      * @var bool
@@ -39,16 +28,11 @@ class LoadAvgCommand extends Command
     protected $sampleTaken;
 
     /**
-     * Create a new Cpu Stat Command instance.
+     * The stat type to look for when running the command.
      *
-     * @return void
+     * @var array|string
      */
-    public function __construct(MonitorConfig $monitorConfig)
-    {
-        parent::__construct();
-
-        $this->loadMonitors = $monitorConfig->forType(['load_avg_1', 'load_avg_5', 'load_avg_15']);
-    }
+    protected $statType = ['load_avg_1', 'load_avg_5', 'load_avg_15'];
 
     /**
      * Execute the console command.
@@ -57,14 +41,16 @@ class LoadAvgCommand extends Command
      */
     public function handle()
     {
+        $this->handleContext();
+
         // Don't run when no monitors are configured.
-        if ($this->loadMonitors->isEmpty()) {
+        if ($this->monitors->isEmpty()) {
             $this->verboseInfo("No Load Avg monitors configured...");
 
             return;
         }
 
-        $this->loadMonitors->each(function ($monitor) {
+        $this->monitors->each(function ($monitor) {
             // Take the sample if we haven't done so already.
             if (!$this->sampleTaken) {
                 $this->sampleTaken = true;

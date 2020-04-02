@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Alert;
+use App\Config\Context;
 use App\Monitors\Monitor;
 use Illuminate\Support\Facades\Http;
 
@@ -17,7 +18,7 @@ class Notifier
      */
     public static function alert(Monitor $monitor, Alert $alert)
     {
-        Http::post('http://forge-james.ngrok.io/monitors/ping', [
+        Http::post(app(Context::class)->getMonitorEndpoint(), [
             'monitor' => $monitor->key,
             'token' => $monitor->token,
             'state' => $alert->monitor_state

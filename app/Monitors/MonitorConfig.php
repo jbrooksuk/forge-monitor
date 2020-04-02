@@ -2,6 +2,7 @@
 
 namespace App\Monitors;
 
+use App\Config\FileFinder;
 use Illuminate\Support\Arr;
 use Yosymfony\Toml\Toml;
 
@@ -10,7 +11,7 @@ class MonitorConfig
     /**
      * The config file finder instance.
      *
-     * @var \App\Monitors\ConfigFileFinder
+     * @var \App\Config\FileFinder
      */
     protected $configFileFinder;
 
@@ -24,9 +25,10 @@ class MonitorConfig
     /**
      * Create a new monitor config instance.
      *
+     * @param  \App\Config\FileFinder $configFileFinder
      * @return void
      */
-    public function __construct(ConfigFileFinder $configFileFinder)
+    public function __construct(FileFinder $configFileFinder)
     {
         $this->configFileFinder = $configFileFinder;
 
@@ -55,7 +57,7 @@ class MonitorConfig
      */
     protected function parseConfig()
     {
-        $configFile = $this->configFileFinder->find();
+        $configFile = $this->configFileFinder->find('/\.monitor$/');
 
         if (!$configFile) {
             return;

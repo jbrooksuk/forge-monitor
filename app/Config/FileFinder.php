@@ -1,19 +1,13 @@
 <?php
 
-namespace App\Monitors;
+namespace App\Config;
 
 use Illuminate\Support\Arr;
+use RuntimeException;
 use Symfony\Component\Finder\Finder;
 
-class ConfigFileFinder
+class FileFinder
 {
-    /**
-     * The name of the config file to use.
-     *
-     * @var string
-     */
-    const FILE_NAME = '/\.monitor$/';
-
     /**
      * The directories to look in.
      *
@@ -42,8 +36,7 @@ class ConfigFileFinder
              ->ignoreDotFiles(false)
              ->depth('== 0')
              ->ignoreVCS(false)
-             ->files()
-             ->name(self::FILE_NAME);
+             ->files();
     }
 
     /**
@@ -62,11 +55,16 @@ class ConfigFileFinder
     /**
      * Find the files.
      *
+     * @param  string  $filename
      * @return array
+     *
+     * @throws \RuntimeException
      */
-    public function find()
+    public function find(string $filename)
     {
-        $files = $this->finder->in($this->directories);
+        $files = $this->finder
+                      ->in($this->directories)
+                      ->name($filename);
 
         return Arr::first($files);
     }

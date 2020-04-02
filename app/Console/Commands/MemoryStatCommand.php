@@ -2,12 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Monitors\MonitorConfig;
 use App\Stats\Memory;
-use Illuminate\Console\Command;
-use Illuminate\Console\Scheduling\Schedule;
 
-class MemoryStatCommand extends Command
+class MemoryStatCommand extends AbstractStatCommand
 {
     use InteractsWithCli;
 
@@ -16,7 +13,7 @@ class MemoryStatCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'stat:mem';
+    protected $signature = 'stat:mem {--E|endpoint= : The endpoint to ping.}';
 
     /**
      * The description of the command.
@@ -26,31 +23,11 @@ class MemoryStatCommand extends Command
     protected $description = 'Sample the memory.';
 
     /**
-     * The monitors for the free memory type.
+     * The stat type to look for when running the command.
      *
-     * @var \Illuminate\Support\Collection
+     * @var array|string
      */
-    protected $freeMemMonitors;
-
-    /**
-     * The monitors for the used memory type.
-     *
-     * @var \Illuminate\Support\Collection
-     */
-    protected $usedMemMonitors;
-
-    /**
-     * Create a new Memory Stat Command instance.
-     *
-     * @return void
-     */
-    public function __construct(MonitorConfig $monitorConfig)
-    {
-        parent::__construct();
-
-        $this->freeMemMonitors = $monitorConfig->forType('free_memory');
-        $this->usedMemMonitors = $monitorConfig->forType('used_memory');
-    }
+    protected $statType = ['free_memory', 'used_memory'];
 
     /**
      * Execute the console command.
@@ -59,7 +36,9 @@ class MemoryStatCommand extends Command
      */
     public function handle()
     {
-        if ($this->freeMemMonitors->isEmpty() && $this->usedMemMonitors->isEmpty()) {
+        $this->handleContext();
+
+        if ($this->monitors->isEmpty()) {
             $this->verboseInfo("No memory monitors configured...");
 
             return;
@@ -68,25 +47,8 @@ class MemoryStatCommand extends Command
         // Sample the memory stat.
         app(Memory::class)->sample();
 
-        $this->handleMonitors($this->freeMemMonitors);
-        $this->handleMonitors($this->usedMemMonitors);
-    }
-
-    /**
-     * Handle the monitors.
-     *
-     * @param  \Illuminate\Support\Collection $monitors
-     * @param  string $type
-     * @return void
-     */
-    protected function handleMonitors($monitors)
-    {
-        if ($monitors->isEmpty()) {
-            return;
-        }
-
         // Filter monitors where they failed the test.
-        $monitors->each(function ($monitor) {
+        $this->monitors->each(function ($monitor) {
             $this->verboseInfo("Testing {$monitor->key}...");
 
             return $monitor->stat()->test();
