@@ -28,6 +28,8 @@ class LoadAvg extends AbstractStat implements Stat
     {
         if (is_readable("/proc/cpuinfo")) {
             $cores = $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
+
+            // https://stackoverflow.com/a/38085813
             $loads = sys_getloadavg();
             $loadPercent = round($loads[0] / ($cores + 1) * 100, 2);
 
