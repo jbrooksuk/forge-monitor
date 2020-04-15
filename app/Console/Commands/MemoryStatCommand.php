@@ -36,8 +36,6 @@ class MemoryStatCommand extends AbstractStatCommand
      */
     public function handle()
     {
-        $this->handleContext();
-
         if ($this->monitors->isEmpty()) {
             $this->verboseInfo("No memory monitors configured...");
 

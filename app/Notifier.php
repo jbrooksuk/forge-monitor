@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Alert;
-use App\Config\Context;
 use App\Monitors\Monitor;
 use Illuminate\Support\Facades\Http;
 
@@ -18,7 +17,7 @@ class Notifier
      */
     public static function alert(Monitor $monitor, Alert $alert)
     {
-        Http::post(app(Context::class)->getMonitorEndpoint(), [
+        Http::post(config('monitor.endpoint'), [
             'monitor' => $monitor->key,
             'token' => $monitor->token,
             'state' => $alert->monitor_state

@@ -2,11 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Config\Context;
-use App\Monitors\MonitorConfig;
-use App\Stats\DiskSpace;
-use Illuminate\Console\Scheduling\Schedule;
-
 class DiskStatCommand extends AbstractStatCommand
 {
     use InteractsWithCli;
@@ -46,8 +41,6 @@ class DiskStatCommand extends AbstractStatCommand
      */
     public function handle()
     {
-        $this->handleContext();
-
         // Don't run when no monitors are configured.
         if ($this->monitors->isEmpty()) {
             $this->verboseInfo("No disk monitors configured...");

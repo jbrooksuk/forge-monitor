@@ -2,19 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Config\Context;
 use App\Monitors\MonitorConfig;
+use Exception;
 use Illuminate\Console\Command;
 
 abstract class AbstractStatCommand extends Command
 {
-    /**
-     * The context instance.
-     *
-     * @var \App\Context
-     */
-    protected $context;
-
     /**
      * The configured monitors for the stat.
      *
@@ -32,11 +25,10 @@ abstract class AbstractStatCommand extends Command
     /**
      * Create a new Disk Stat Command instance.
      *
-     * @param  \App\Config\Context  $context
      * @param  \App\Monitors\MonitorConfig  $monitorConfig
      * @return void
      */
-    public function __construct(Context $context, MonitorConfig $monitorConfig)
+    public function __construct(MonitorConfig $monitorConfig)
     {
         parent::__construct();
 
@@ -44,19 +36,6 @@ abstract class AbstractStatCommand extends Command
             throw new Exception('No statType defined.');
         }
 
-        $this->context = $context;
         $this->monitors = $monitorConfig->forType($this->statType);
-    }
-
-    /**
-     * Set context settings.
-     *
-     * @return void
-     */
-    protected function handleContext() : void
-    {
-        if ($endpoint = $this->option('endpoint')) {
-            $this->context->setMonitorEndpoint($this->option('endpoint'));
-        }
     }
 }

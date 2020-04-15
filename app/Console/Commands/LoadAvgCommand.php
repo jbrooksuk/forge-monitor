@@ -41,8 +41,6 @@ class LoadAvgCommand extends AbstractStatCommand
      */
     public function handle()
     {
-        $this->handleContext();
-
         // Don't run when no monitors are configured.
         if ($this->monitors->isEmpty()) {
             $this->verboseInfo("No Load Avg monitors configured...");
