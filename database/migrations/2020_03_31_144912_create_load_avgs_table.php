@@ -15,9 +15,8 @@ class CreateLoadAvgsTable extends Migration
     {
         Schema::create('load_avgs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('period_1');
-            $table->unsignedInteger('period_2');
-            $table->unsignedInteger('period_3');
+            $table->unsignedInteger('load_avg');
+            $table->unsignedInteger('load_avg_percent')->nullable();
             $table->unsignedInteger('cpus');
             $table->timestamps();
         });
