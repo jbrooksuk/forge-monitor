@@ -2,6 +2,6 @@
 
 return [
 
-    'endpoint' => env('MONITOR_ENDPOINT', 'https://forge.laravel.com/'),
+    'endpoint' => env('MONITOR_ENDPOINT', 'https://forge.laravel.com/monitors/ping'),
 
 ];
