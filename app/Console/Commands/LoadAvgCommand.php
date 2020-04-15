@@ -32,7 +32,7 @@ class LoadAvgCommand extends AbstractStatCommand
      *
      * @var array|string
      */
-    protected $statType = ['load_avg_1', 'load_avg_5', 'load_avg_15'];
+    protected $statType = ['cpu_load'];
 
     /**
      * Execute the console command.
@@ -43,7 +43,7 @@ class LoadAvgCommand extends AbstractStatCommand
     {
         // Don't run when no monitors are configured.
         if ($this->monitors->isEmpty()) {
-            $this->verboseInfo("No Load Avg monitors configured...");
+            $this->verboseInfo("No CPU Load monitors configured...");
 
             return;
         }
