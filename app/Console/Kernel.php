@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('stat:disk')->hourly();
+        $schedule->command('stat:disk')->everyMinute();
         $schedule->command('stat:load')->everyMinute();
         $schedule->command('stat:mem')->everyMinute();
         $schedule->command('app:clean-up')->monthly();
