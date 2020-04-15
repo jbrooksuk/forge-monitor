@@ -27,7 +27,7 @@ class LoadAvg extends AbstractStat implements Stat
     public function sample()
     {
         if (is_readable("/proc/cpuinfo")) {
-            $cores = $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
+            $cores = (int) $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
 
             // https://stackoverflow.com/a/38085813
             $loads = sys_getloadavg();
