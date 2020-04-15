@@ -27,80 +27,16 @@ class LoadAvg extends AbstractStat implements Stat
     public function sample()
     {
         if (is_readable("/proc/cpuinfo")) {
-            $cpuNb = $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
-            $load = $this->executeCommand("cat /proc/loadavg | awk '{print $1, $2, $3}'");
-
-            $loads = explode(' ', $load);
+            $cores = $this->executeCommand('cat /proc/cpuinfo | grep "^processor" | wc -l');
+            $loads = sys_getloadavg();
+            $loadPercent = round($loads[0] / ($cores + 1) * 100, 2);
 
             LoadAvgModel::create([
                 'load_avg' => $loads[0],
-                'load_avg_percent' => $this->getServerLoadPercent(),
-                'cpus' => (int) $cpuNb,
+                'load_avg_percent' => $loadPercent,
+                'cpus' => (int) $cores,
             ]);
         }
-    }
-
-    /**
-     * Calculate the server load as a percentage.
-     *
-     * @return float|null
-     */
-    protected function getServerLoadPercent()
-    {
-        $stat1 = $this->getServerLoad();
-        sleep(1);
-        $stat2 = $this->getServerLoad();
-
-        if (!$stat1 || !$stat2) {
-            return null;
-        }
-
-        $stat2[0] -= $stat1[0];
-        $stat2[1] -= $stat1[1];
-        $stat2[2] -= $stat1[2];
-        $stat2[3] -= $stat1[3];
-
-        // Sum User, Nice, System and Idle
-        $cpuTime = $stat2[0] + $stat2[1] + $stat2[2] + $stat2[3];
-
-        $load = 100 - ($stat2[3] * 100 / $cpuTime);
-
-        return $load;
-    }
-
-    /**
-     * Gets the User, Nice, System and Idle values.
-     *
-     * @return array|null
-     */
-    protected function getServerLoad()
-    {
-        if (is_readable('/proc/stat')) {
-            $stats = file_get_contents('/proc/stat');
-
-            if (!$stats) {
-                return null;
-            }
-
-            $stats = preg_replace('/[[:blank:]]+/', ' ', $stats);
-            $stats = str_replace(["\r\n", "\n\r", "\r"], "\n", $stats);
-            $lines = explode("\n", $stats);
-
-            foreach ($lines as $stat) {
-                $data = explode(" ", trim($stat));
-
-                if (count($data) >= 5 && $data[0] == 'cpu') {
-                    return [
-                        $data[1],
-                        $data[2],
-                        $data[3],
-                        $data[4],
-                    ];
-                }
-            }
-        }
-
-        return null;
     }
 
     /**
