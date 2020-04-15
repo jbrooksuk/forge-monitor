@@ -75,7 +75,7 @@ class Monitor
     {
         switch ($this->type) {
             case 'disk': return new DiskSpace($this);
-            case 'load_avg': return new LoadAvg($this);
+            case 'cpu_load': return new LoadAvg($this);
             case 'free_memory': return new FreeMemory($this);
             case 'used_memory': return new UsedMemory($this);
         }
